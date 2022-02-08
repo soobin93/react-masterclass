@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 function App() {
   return (
     <Container>
+      <Title>Hello World!</Title>
       <Box color="teal" />
       <Circle color="tomato" />
       <MovingBox color="yellow" />
@@ -27,7 +28,12 @@ const rotation = keyframes`
 `;
 
 const Container = styled.div`
+  background-color: ${(props) => props.theme.backgroundColor};
   display: flex;
+`;
+
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor}
 `;
 
 const Box = styled.div`
