@@ -1,13 +1,13 @@
 import Circle from "./Circle";
 
-function App() {
+const App = () => {
   return (
     <div>
-      <Circle bgColor="red" />
-      <Circle bgColor="blue" />
-      <Circle bgColor="green" />
+      <Circle bgColor="red" text="Hello world!" />
+      <Circle bgColor="blue" borderColor="yellow" />
+      <Circle bgColor="green" borderColor="red" />
     </div>
   );
-}
+};
 
 export default App;
