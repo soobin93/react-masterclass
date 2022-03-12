@@ -1,32 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
+import styled from "styled-components";
+
+const Container = styled.div`
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
+`;
 
 const App = () => {
-  const [username, setUsername] = useState("");
-
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const usernameValue = event.currentTarget.value;
-    setUsername(usernameValue);
-  };
-
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(`Hello ${username}`);
-  };
-
-  return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          value={username}
-          onChange={onChange}
-          type="text"
-          placeholder="username"
-        />
-
-        <button>Log in</button>
-      </form>
-    </div>
-  );
+  return <Container>Hello World!</Container>;
 };
 
 export default App;
