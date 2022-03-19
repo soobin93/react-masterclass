@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Link,
   Route,
@@ -156,22 +156,24 @@ const Coin = () => {
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  useEffect(() => {
-    (async () => {
-      const infoResponse = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
+  const loadData = useCallback(async () => {
+    const infoResponse = await (
+      await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+    ).json();
 
-      const priceResponse = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
+    const priceResponse = await (
+      await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+    ).json();
 
-      setInfo(infoResponse);
-      setPriceInfo(priceResponse);
+    setInfo(infoResponse);
+    setPriceInfo(priceResponse);
 
-      setLoading(false);
-    })();
+    setLoading(false);
   }, [coinId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <Container>
