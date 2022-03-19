@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
 import {
   Link,
   Route,
@@ -7,7 +6,10 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
+import { useQuery } from "react-query";
 import styled from "styled-components";
+
+import { fetchCoinInfo, fetchCoinTickers } from "../../api";
 import Chart from "./Chart";
 import Price from "./Price";
 
@@ -90,7 +92,7 @@ interface RouteState {
   name: string;
 }
 
-interface InfoData {
+interface IInfo {
   id: string;
   name: string;
   symbol: string;
@@ -111,7 +113,7 @@ interface InfoData {
   last_data_at: string;
 }
 
-interface PriceData {
+interface ITickers {
   id: string;
   name: string;
   symbol: string;
@@ -149,31 +151,19 @@ const Coin = () => {
   const { coinId } = useParams<RouteParams>();
   const { state: routeState } = useLocation<RouteState>();
 
-  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
-
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  const loadData = useCallback(async () => {
-    const infoResponse = await (
-      await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-    ).json();
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfo>(
+    ["info", coinId],
+    () => fetchCoinInfo(coinId)
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<ITickers>(
+    ["tickers", coinId],
+    () => fetchCoinTickers(coinId)
+  );
 
-    const priceResponse = await (
-      await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-    ).json();
-
-    setInfo(infoResponse);
-    setPriceInfo(priceResponse);
-
-    setLoading(false);
-  }, [coinId]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const loading = infoLoading || tickersLoading;
 
   return (
     <Container>
@@ -183,7 +173,7 @@ const Coin = () => {
             ? routeState.name
             : loading
             ? "Loading..."
-            : info?.name}
+            : infoData?.name}
         </Title>
       </Header>
 
@@ -194,31 +184,31 @@ const Coin = () => {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
 
             <OverviewItem>
               <span>Symbol:</span>
-              <span>{info?.symbol}</span>
+              <span>{infoData?.symbol}</span>
             </OverviewItem>
 
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{infoData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
 
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
 
           <Overview>
             <OverviewItem>
               <span>Total Supply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
 
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
