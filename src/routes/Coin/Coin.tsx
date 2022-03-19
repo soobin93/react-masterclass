@@ -2,6 +2,7 @@ import {
   Link,
   Route,
   Switch,
+  useHistory,
   useLocation,
   useParams,
   useRouteMatch,
@@ -14,9 +15,22 @@ import Chart from "./Chart";
 import Price from "./Price";
 
 const Container = styled.div`
-  padding: 0 20px;
+  padding: 20px;
   max-width: 480px;
   margin: 0 auto;
+`;
+
+const BackButton = styled.button`
+  font-weight: 400;
+  background-color: ${(props) => props.theme.textColor};
+  color: #2f3640;
+  padding: 7px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) => props.theme.accentColor};
+  }
 `;
 
 const Header = styled.header`
@@ -150,6 +164,7 @@ interface ITickers {
 const Coin = () => {
   const { coinId } = useParams<RouteParams>();
   const { state: routeState } = useLocation<RouteState>();
+  const history = useHistory();
 
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
@@ -167,6 +182,8 @@ const Coin = () => {
 
   return (
     <Container>
+      <BackButton onClick={history.goBack}>&larr; Back</BackButton>
+
       <Header>
         <Title>
           {routeState?.name
