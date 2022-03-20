@@ -11,3 +11,10 @@ export async function fetchCoinInfo (coinId: string) {
 export async function fetchCoinTickers (coinId: string) {
   return await (await fetch(`${BASE_URL}/tickers/${coinId}`)).json();
 }
+
+export async function fetchCoinHistory (coinId: string) {
+  const endTime = Math.floor(Date.now() / 1000);
+  const startTime = endTime - 60 * 60 * 24 * 7 * 2;
+
+  return await (await fetch(`${BASE_URL}/coins/${coinId}/ohlcv/historical?start=${startTime}&end=${endTime}`)).json();
+}

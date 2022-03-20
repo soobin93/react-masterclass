@@ -2,7 +2,6 @@ import {
   Link,
   Route,
   Switch,
-  useHistory,
   useLocation,
   useParams,
   useRouteMatch,
@@ -24,9 +23,13 @@ const BackButton = styled.button`
   font-weight: 400;
   background-color: ${(props) => props.theme.textColor};
   color: #2f3640;
-  padding: 7px 20px;
   border-radius: 10px;
   cursor: pointer;
+
+  a {
+    display: flex;
+    padding: 7px 20px;
+  }
 
   &:hover {
     color: ${(props) => props.theme.accentColor};
@@ -88,7 +91,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   font-size: 12px;
   font-weight: 400;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 7px 0px;
+  padding: 12px 0px;
   border-radius: 10px;
   color: ${(props) =>
     props.isActive ? props.theme.accentColor : props.theme.textColor};
@@ -164,7 +167,6 @@ interface ITickers {
 const Coin = () => {
   const { coinId } = useParams<RouteParams>();
   const { state: routeState } = useLocation<RouteState>();
-  const history = useHistory();
 
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
@@ -182,7 +184,9 @@ const Coin = () => {
 
   return (
     <Container>
-      <BackButton onClick={history.goBack}>&larr; Back</BackButton>
+      <BackButton>
+        <Link to="/">&larr; Back</Link>
+      </BackButton>
 
       <Header>
         <Title>
@@ -230,22 +234,22 @@ const Coin = () => {
           </Overview>
 
           <Tabs>
-            <Tab isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>Price</Link>
-            </Tab>
-
             <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+
+            <Tab isActive={priceMatch !== null}>
+              <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           </Tabs>
 
           <Switch>
-            <Route path="/:coinId/price">
-              <Price />
+            <Route path="/:coinId/chart">
+              <Chart coinId={coinId} />
             </Route>
 
-            <Route path="/:coinId/chart">
-              <Chart />
+            <Route path="/:coinId/price">
+              <Price />
             </Route>
           </Switch>
         </>
