@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import {
   Link,
   Route,
@@ -177,13 +178,26 @@ const Coin = () => {
   );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<ITickers>(
     ["tickers", coinId],
-    () => fetchCoinTickers(coinId)
+    () => fetchCoinTickers(coinId),
+    {
+      refetchInterval: 5000,
+    }
   );
 
   const loading = infoLoading || tickersLoading;
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {routeState?.name
+            ? routeState.name
+            : loading
+            ? "Loading..."
+            : infoData?.name}
+        </title>
+      </Helmet>
+
       <BackButton>
         <Link to="/">&larr; Back</Link>
       </BackButton>
@@ -214,8 +228,8 @@ const Coin = () => {
             </OverviewItem>
 
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>{`$ ${tickersData?.quotes.USD.price.toFixed(2)}`}</span>
             </OverviewItem>
           </Overview>
 
