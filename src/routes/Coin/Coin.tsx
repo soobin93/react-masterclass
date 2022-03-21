@@ -259,10 +259,12 @@ const Coin = () => {
 
           <Switch>
             <Route path="/:coinId/chart">
+              {/* TODO: Update below component to look more like a stock chart */}
               <Chart coinId={coinId} />
             </Route>
 
             <Route path="/:coinId/price">
+              {/* TODO: Finish below component */}
               <Price />
             </Route>
           </Switch>
